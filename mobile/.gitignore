@@ -1,0 +1,22 @@
+# OSX
+.DS_Store
+
+# Node
+node_modules/
+npm-debug.log
+
+# Android
+build/
+.gradle
+local.properties
+*.keystore
+
+# iOS
+ios/Pods/
+ios/build/
+
+# Bundle
+*.jsbundle
+
+# Environment
+.env
