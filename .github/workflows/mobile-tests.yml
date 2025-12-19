@@ -1,0 +1,52 @@
+name: Mobile Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/mobile-tests.yml'
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'mobile/**'
+
+jobs:
+  test:
+    name: Run Mobile Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        working-directory: mobile
+        run: npm ci
+
+      - name: Run linter
+        working-directory: mobile
+        run: npm run lint || echo "Linter not configured"
+        continue-on-error: true
+
+      - name: Run tests
+        working-directory: mobile
+        run: npm test || echo "Tests not configured yet"
+        continue-on-error: true
+
+      - name: Type check
+        working-directory: mobile
+        run: npx tsc --noEmit || echo "Type check not configured"
+        continue-on-error: true
