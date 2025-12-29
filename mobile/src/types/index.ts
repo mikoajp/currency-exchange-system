@@ -30,11 +30,14 @@ export interface Wallet {
 }
 
 export interface ExchangeRate {
-  currency: string;
-  currencyName: string;
+  id: number;
+  currency: string; // Currency name (e.g., "dolar amerykański")
+  code: string;     // ISO code (e.g., "USD")
   bid: number;
   ask: number;
+  midRate: number;
   rateDate: string;
+  createdAt?: string;
 }
 
 export interface Transaction {
