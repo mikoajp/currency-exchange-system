@@ -37,6 +37,15 @@ jobs:
           --health-retries 5
 
     steps:
+      - name: Free Disk Space
+        run: |
+          echo "=== Before cleanup ==="
+          df -h
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost "$AGENT_TOOLSDIRECTORY"
+          docker system prune -a -f || true
+          echo "=== After cleanup ==="
+          df -h
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -71,7 +80,7 @@ jobs:
         with:
           name: test-results
           path: backend/build/test-results/test/
-          retention-days: 30
+          retention-days: 7
 
       - name: Upload test reports
         if: always()
@@ -79,7 +88,7 @@ jobs:
         with:
           name: test-reports
           path: backend/build/reports/tests/test/
-          retention-days: 30
+          retention-days: 7
 
       - name: Comment test results on PR
         if: github.event_name == 'pull_request' && always()
