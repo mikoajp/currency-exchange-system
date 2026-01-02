@@ -78,11 +78,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
-        working-directory: backend
-        run: |
-          if [ -f Dockerfile ]; then
-            docker build -t currency-exchange-backend:${{ github.sha }} .
-            docker tag currency-exchange-backend:${{ github.sha }} currency-exchange-backend:latest
-          else
-            echo "Dockerfile not found, skipping Docker build"
-          fi
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          file: backend/Dockerfile
+          push: false
+          tags: |
+            currency-exchange-backend:${{ github.sha }}
+            currency-exchange-backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          load: true
