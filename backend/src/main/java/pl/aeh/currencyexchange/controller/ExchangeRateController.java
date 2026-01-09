@@ -88,6 +88,18 @@ public class ExchangeRateController {
         return ResponseEntity.ok(exchangeRateService.getRateHistory(code, from, to));
     }
 
+    @GetMapping("/calculate")
+    @Operation(summary = "Calculate exchange amount")
+    @ApiResponse(responseCode = "200", description = "Calculation successful")
+    public ResponseEntity<java.math.BigDecimal> calculateExchange(
+            @Parameter(description = "Source currency code", example = "PLN") @RequestParam String from,
+            @Parameter(description = "Target currency code", example = "USD") @RequestParam String to,
+            @Parameter(description = "Amount to exchange", example = "100.00") @RequestParam java.math.BigDecimal amount) {
+        
+        log.debug("GET /api/rates/calculate?from={}&to={}&amount={}", from, to, amount);
+        return ResponseEntity.ok(exchangeRateService.calculateExchangeAmount(from, to, amount));
+    }
+
     @PostMapping("/sync")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(

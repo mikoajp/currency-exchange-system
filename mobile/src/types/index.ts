@@ -47,7 +47,7 @@ export interface Transaction {
   toCurrency?: string;
   fromAmount?: number;
   toAmount?: number;
-  exchangeRate?: number;
+  rate?: number;
   status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
   createdAt: string;
 }

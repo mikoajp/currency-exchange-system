@@ -14,6 +14,8 @@ import pl.aeh.currencyexchange.exception.ResourceNotFoundException;
 import pl.aeh.currencyexchange.model.ExchangeRate;
 import pl.aeh.currencyexchange.repository.ExchangeRateRepository;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +27,32 @@ public class ExchangeRateService {
 
     private final NbpClient nbpClient;
     private final ExchangeRateRepository exchangeRateRepository;
+
+    /**
+     * Calculate exchange amount based on current rates.
+     */
+    public BigDecimal calculateExchangeAmount(String fromCurrency, String toCurrency, BigDecimal amount) {
+        if (fromCurrency.equals(toCurrency)) {
+            return amount;
+        }
+
+        if ("PLN".equals(fromCurrency)) {
+            // PLN -> Foreign (Buy Foreign)
+            ExchangeRateDto rate = getCurrentRate(toCurrency);
+            return amount.divide(rate.getAsk(), 2, RoundingMode.HALF_DOWN);
+        } else if ("PLN".equals(toCurrency)) {
+            // Foreign -> PLN (Sell Foreign)
+            ExchangeRateDto rate = getCurrentRate(fromCurrency);
+            return amount.multiply(rate.getBid()).setScale(2, RoundingMode.HALF_DOWN);
+        } else {
+            // Foreign -> Foreign (Cross rate via PLN)
+            ExchangeRateDto fromRate = getCurrentRate(fromCurrency);
+            BigDecimal plnAmount = amount.multiply(fromRate.getBid());
+            
+            ExchangeRateDto toRate = getCurrentRate(toCurrency);
+            return plnAmount.divide(toRate.getAsk(), 2, RoundingMode.HALF_DOWN);
+        }
+    }
 
     /**
      * Fetch current rates from NBP, save to DB, and return them.
