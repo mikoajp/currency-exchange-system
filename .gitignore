@@ -1,11 +1,5 @@
 # IDE
-.idea/
-.vscode/
 *.swp
-
-# OS
-.DS_Store
-Thumbs.db
 
 # Environment
 .env
@@ -17,3 +11,45 @@ Thumbs.db
 !/docs/Projekt.pdf
 !/docs/Dokumentacja Projektowa - System Kantoru.pdf
 !/docs/IMPLEMENTATION_GUIDE.md
+
+# ========================
+# SYSTEMOWE (OSX / Windows)
+# ========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# ========================
+# BACKEND (Java / Spring Boot)
+# ========================
+backend/target/
+backend/**/*.class
+backend/.mvn/wrapper/maven-wrapper.properties
+backend/mvnw
+backend/mvnw.cmd
+backend/help.md
+*.jar
+*.war
+
+# ========================
+# MOBILE
+# ========================
+
+# Node modules 
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Android
+mobile/android/build/
+mobile/android/.gradle
+mobile/android/local.properties
+*.keystore
+
+# iOS
+mobile/ios/Pods/
+mobile/ios/build/
+
+# Bundle
+*.jsbundle
