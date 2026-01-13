@@ -8,8 +8,6 @@
 # Logs
 *.log
 /docs
-!/docs/Projekt.pdf
-!/docs/Dokumentacja Projektowa - System Kantoru.pdf
 !/docs/IMPLEMENTATION_GUIDE.md
 
 # ========================
