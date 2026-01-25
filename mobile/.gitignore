@@ -1,44 +1,54 @@
-# OSX
-#
+# IDE
+*.swp
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+/docs
+!/docs/IMPLEMENTATION_GUIDE.md
+
+# ========================
+# SYSTEMOWE (OSX / Windows)
+# ========================
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/
 
-# Xcode
-#
-build/
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata
-*.xccheckout
-*.moved-aside
-DerivedData
-*.hmap
-*.ipa
-*.xcuserstate
-ios/.xcode.env.local
+# ========================
+# BACKEND (Java / Spring Boot)
+# ========================
+backend/target/
+backend/**/*.class
+backend/.mvn/wrapper/maven-wrapper.properties
+backend/mvnw
+backend/mvnw.cmd
+backend/help.md
+*.jar
+*.war
 
-# Android/IntelliJ
-#
-build/
-.idea
-.gradle
-local.properties
-*.iml
-*.hprof
-.cxx/
-*.keystore
-!debug.keystore
+# ========================
+# MOBILE
+# ========================
 
-# node.js
-#
+# Node modules 
 node_modules/
 npm-debug.log
 yarn-error.log
+
+# Android
+mobile/android/build/
+mobile/android/.gradle
+mobile/android/local.properties
+*.keystore
+!debug.keystore
+
+# iOS
+mobile/ios/Pods/
+mobile/ios/build/
 
 # fastlane
 #
@@ -54,13 +64,3 @@ yarn-error.log
 
 # Bundle artifact
 *.jsbundle
-
-# Ruby / CocoaPods
-/ios/Pods/
-/vendor/bundle/
-
-# Temporary files created by Metro to check the health of the file watcher
-.metro-health-check*
-
-# testing
-/coverage
