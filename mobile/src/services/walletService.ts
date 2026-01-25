@@ -1,5 +1,9 @@
 import apiClient from './api';
+<<<<<<< Updated upstream
 import { Wallet, Transaction } from '@/types';
+=======
+import { Wallet, Transaction } from '../types';
+>>>>>>> Stashed changes
 
 export interface ExchangeRequest {
   fromCurrency: string;
