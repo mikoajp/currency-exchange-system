@@ -6,17 +6,18 @@ import {
   FlatList, 
   TouchableOpacity, 
   ActivityIndicator, 
-  RefreshControl 
+  RefreshControl,
+  Button
 } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
+
 import { AuthContext } from '@/context/AuthContext';
 import { walletService } from '@/services/walletService';
-import { Wallet } from '@/types'; // Import z Twojego index.ts/types.ts
+import { Wallet } from '@/types'; 
 
 const WalletScreen = ({ navigation }: any) => {
   const { logout } = useContext(AuthContext);
 
-  // Pobieranie danych z API
   const { data: wallets, isLoading, refetch } = useQuery({
     queryKey: ['wallets'],
     queryFn: walletService.getMyWallets,
@@ -43,13 +44,18 @@ const WalletScreen = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
+      {/* Nagłówek */}
       <View style={styles.header}>
-        <Text style={styles.title}>Moje Środki</Text>
+        <View>
+            <Text style={styles.title}>Twój Portfel</Text>
+            <Text style={styles.subtitle}>Jesteś zalogowany</Text>
+        </View>
         <TouchableOpacity onPress={logout}>
           <Text style={styles.logoutText}>Wyloguj</Text>
         </TouchableOpacity>
       </View>
 
+      {/* Lista Portfeli */}
       <FlatList
         data={wallets}
         keyExtractor={(item) => item.id.toString()}
@@ -63,7 +69,7 @@ const WalletScreen = ({ navigation }: any) => {
         }
       />
 
-      {/* Przycisk przejścia do wymiany */}
+      {/* Przycisk nawigacji do Wymiany (Exchange) */}
       <View style={styles.footer}>
         <TouchableOpacity 
           style={styles.exchangeButton}
@@ -84,10 +90,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', 
     alignItems: 'center', 
     padding: 20, 
-    backgroundColor: '#fff' 
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e5ea'
   },
-  title: { fontSize: 24, fontWeight: 'bold' },
-  logoutText: { color: 'red', fontSize: 16 },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#000' },
+  subtitle: { fontSize: 14, color: 'gray' },
+  logoutText: { color: 'red', fontSize: 16, fontWeight: '500' },
   list: { padding: 16 },
   card: {
     backgroundColor: '#fff',
@@ -95,12 +104,16 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 12,
     elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   currencyCode: { fontSize: 20, fontWeight: 'bold', color: '#333' },
   balance: { fontSize: 24, fontWeight: '600', color: '#007AFF' },
   emptyText: { textAlign: 'center', marginTop: 50, color: 'gray' },
-  footer: { padding: 20, backgroundColor: '#fff' },
+  footer: { padding: 20, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#e5e5ea' },
   exchangeButton: {
     backgroundColor: '#007AFF',
     padding: 16,
