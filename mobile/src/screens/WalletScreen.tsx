@@ -110,7 +110,7 @@ const WalletScreen = () => {
         {/* PRZYCISK: Wykresy Kursów */}
         <TouchableOpacity 
           style={[styles.exchangeButton, styles.chartsButton]}
-          onPress={() => navigation.navigate('Charts')}
+          onPress={() => navigation.navigate('ExchangeRateCharts')}
         >
           <Text style={styles.buttonText}>📊 Wykresy Kursów</Text>
         </TouchableOpacity>

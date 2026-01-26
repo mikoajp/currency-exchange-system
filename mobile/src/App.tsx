@@ -86,7 +86,7 @@ function AppNavigator() {
           />
           {/* 3. DODANA TRASA WYKRESÓW */}
           <Stack.Screen 
-            name="Charts" 
+            name="ExchangeRateCharts" 
             component={ExchangeRateChartsScreen} 
             options={{ 
               title: 'Wykresy Kursów',
