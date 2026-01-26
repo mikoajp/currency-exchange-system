@@ -66,21 +66,12 @@ public class AuthService {
 
         // Create default PLN wallet with 0 balance
         Wallet plnWallet = Wallet.builder()
-                .user(user) // Wiążemy portfel z użytkownikiem
-                .currency("PLN") // ZMIANA: currency -> currencyCode (zgodnie z Wallet.java)
-                .balance(BigDecimal.ZERO) // Ustawiamy 0 na start
+                .user(user)
+                .currency("PLN")
+                .balance(BigDecimal.ZERO)
                 .build();
         
-        // Zakładam, że w klasie User masz metodę addWallet, która dodaje do listy i ustawia relację
-        // Jeśli nie masz, upewnij się, że User ma listę portfeli i CascadeType.ALL
-        if (user.getWallets() != null) {
-            user.addWallet(plnWallet);
-        } else {
-             // Fallback jeśli metoda addWallet nie istnieje lub lista jest null
-             // Wymagałoby to wstrzyknięcia WalletRepository, ale trzymajmy się Twojej struktury Usera
-             // user.setWallets(new ArrayList<>(List.of(plnWallet)));
-             user.addWallet(plnWallet); 
-        }
+        user.addWallet(plnWallet);
 
         // Save user (Cascade should save wallet too)
         user = userRepository.save(user);
@@ -149,6 +140,8 @@ public class AuthService {
                     jwtUtil.getExpirationTime()
             );
 
+        } catch (InvalidCredentialsException e) {
+            throw e;
         } catch (Exception e) {
             log.error("Login failed for email {}: {}", loginDto.getEmail(), e.getMessage());
             throw new InvalidCredentialsException("Invalid email or password");

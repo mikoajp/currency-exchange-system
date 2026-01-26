@@ -177,7 +177,7 @@ class AuthServiceTest {
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
-        when(authentication.getPrincipal()).thenReturn(userDetails);
+        // Removed unnecessary stubbing for authentication.getPrincipal()
         when(userRepository.findByEmail(loginDto.getEmail())).thenReturn(Optional.of(user));
 
         // When/Then
@@ -206,7 +206,7 @@ class AuthServiceTest {
             assertThat(savedUser.getWallets()).hasSize(1);
             
             // 👇 KLUCZOWA ZMIANA: getCurrencyCode() zamiast getCurrency()
-            assertThat(savedUser.getWallets().get(0).getCurrencyCode()).isEqualTo("PLN");
+            assertThat(savedUser.getWallets().get(0).getCurrency()).isEqualTo("PLN");
             
             // Sprawdzenie salda 0.00
             assertThat(savedUser.getWallets().get(0).getBalance()).isEqualByComparingTo(BigDecimal.ZERO);

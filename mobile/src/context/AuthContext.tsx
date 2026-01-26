@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       const response = await apiClient.post('/users/register', {
-        name,
+        firstName: name, // Mapujemy 'name' na 'firstName'
         email,
         password: pass,
       });
