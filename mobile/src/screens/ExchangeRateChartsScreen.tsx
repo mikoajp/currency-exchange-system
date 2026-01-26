@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
+// import { LineChart } from 'react-native-chart-kit'; // USUNIĘTE - problemy z SVG
 import { useQuery } from '@tanstack/react-query';
 import { exchangeRateService } from '@/services/exchangeRateService';
 
@@ -160,29 +160,31 @@ const ExchangeRateChartsScreen = () => {
             <Text style={styles.chartTitle}>
               {currencyNames[selectedCurrency]} / PLN
             </Text>
-            <LineChart
-              data={getChartData()}
-              width={width - 40}
-              height={220}
-              chartConfig={{
-                backgroundColor: '#ffffff',
-                backgroundGradientFrom: '#ffffff',
-                backgroundGradientTo: '#f5f7fb',
-                decimalPlaces: 4,
-                color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                style: {
-                  borderRadius: 16,
-                },
-                propsForDots: {
-                  r: '4',
-                  strokeWidth: '2',
-                  stroke: '#007AFF',
-                },
-              }}
-              bezier
-              style={styles.chart}
-            />
+            
+            {/* PROSTY WYKRES TEKSTOWY - zamiast LineChart */}
+            <View style={styles.simpleChart}>
+              <Text style={styles.chartNote}>
+                📊 Dane historyczne dla {currencyNames[selectedCurrency]}
+              </Text>
+              <Text style={styles.chartNote}>
+                📅 Okres: {timeRanges.find(r => r.value === timeRange)?.label}
+              </Text>
+              {rates && rates.length > 0 && (
+                <View style={styles.dataList}>
+                  {rates.slice(0, 5).map((rate, idx) => (
+                    <View key={idx} style={styles.dataRow}>
+                      <Text style={styles.dataDate}>{rate.effectiveDate}</Text>
+                      <Text style={styles.dataRate}>{rate.rate.toFixed(4)} PLN</Text>
+                    </View>
+                  ))}
+                  {rates.length > 5 && (
+                    <Text style={styles.moreData}>
+                      ... i {rates.length - 5} więcej punktów danych
+                    </Text>
+                  )}
+                </View>
+              )}
+            </View>
           </View>
 
           {/* Statistics */}
@@ -361,6 +363,41 @@ const styles = StyleSheet.create({
   },
   chart: {
     borderRadius: 16,
+  },
+  simpleChart: {
+    padding: 16,
+    backgroundColor: '#f5f7fb',
+    borderRadius: 12,
+  },
+  chartNote: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 8,
+  },
+  dataList: {
+    marginTop: 16,
+  },
+  dataRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e5ea',
+  },
+  dataDate: {
+    fontSize: 14,
+    color: '#333',
+  },
+  dataRate: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#007AFF',
+  },
+  moreData: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 8,
+    textAlign: 'center',
   },
   statsContainer: {
     backgroundColor: '#fff',
