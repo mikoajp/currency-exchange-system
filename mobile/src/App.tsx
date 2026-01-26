@@ -12,6 +12,7 @@ import WalletScreen from '@/screens/WalletScreen';
 import ExchangeScreen from '@/screens/ExchangeScreen';
 import TopUpScreen from '@/screens/TopUpScreen';
 import HistoryScreen from '@/screens/HistoryScreen';
+import ExchangeRateChartsScreen from '@/screens/ExchangeRateChartsScreen';
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
@@ -79,6 +80,15 @@ function AppNavigator() {
             component={HistoryScreen} 
             options={{ 
               title: 'Historia Transakcji',
+              headerBackTitle: 'Portfel',
+            }}
+          />
+          {/* 3. DODANA TRASA WYKRESÓW */}
+          <Stack.Screen 
+            name="Charts" 
+            component={ExchangeRateChartsScreen} 
+            options={{ 
+              title: 'Wykresy Kursów',
               headerBackTitle: 'Portfel',
             }}
           />

@@ -106,6 +106,14 @@ const WalletScreen = () => {
         >
           <Text style={styles.buttonText}>Historia Transakcji</Text>
         </TouchableOpacity>
+
+        {/* PRZYCISK: Wykresy Kursów */}
+        <TouchableOpacity 
+          style={[styles.exchangeButton, styles.chartsButton]}
+          onPress={() => navigation.navigate('Charts')}
+        >
+          <Text style={styles.buttonText}>📊 Wykresy Kursów</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -169,6 +177,11 @@ const styles = StyleSheet.create({
 
   historyButton: {
     backgroundColor: '#8E8E93', 
+    marginTop: 12,
+  },
+
+  chartsButton: {
+    backgroundColor: '#5856D6',
     marginTop: 12,
   }
 });
