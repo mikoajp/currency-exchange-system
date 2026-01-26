@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '@/types';
 
 import { AuthProvider, AuthContext } from '@/context/AuthContext';
 import LoginScreen from '@/screens/LoginScreen';
@@ -15,7 +16,7 @@ import HistoryScreen from '@/screens/HistoryScreen';
 import ExchangeRateChartsScreen from '@/screens/ExchangeRateChartsScreen';
 
 const queryClient = new QueryClient();
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function AppNavigator() {
   const { isLoading, userToken } = useContext(AuthContext);
