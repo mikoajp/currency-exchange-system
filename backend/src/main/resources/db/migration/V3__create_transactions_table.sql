@@ -2,10 +2,12 @@ CREATE TABLE transactions (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL,
     type VARCHAR(20) NOT NULL,
+    
     from_currency VARCHAR(3),
     to_currency VARCHAR(3),
-    from_amount DECIMAL(19, 2),
-    to_amount DECIMAL(19, 2),
+    from_amount DECIMAL(19, 4),
+    to_amount DECIMAL(19, 4),
+    
     exchange_rate DECIMAL(19, 6),
     description VARCHAR(1000),
     status VARCHAR(20) NOT NULL DEFAULT 'PENDING',

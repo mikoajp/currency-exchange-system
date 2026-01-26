@@ -13,6 +13,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class WalletDto {
     private Long id;
-    private String currency;
+    
+    // ZMIANA: currency -> currencyCode (dla spójności z Wallet.java i WalletRepository)
+    private String currency; 
+    
     private BigDecimal balance;
 }

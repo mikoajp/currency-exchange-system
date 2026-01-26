@@ -7,6 +7,7 @@ interface AuthContextType {
   isLoading: boolean;
   userToken: string | null;
   login: (email: string, pass: string) => Promise<boolean>;
+  register: (name: string, email: string, pass: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }
 
@@ -55,12 +56,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const register = async (name: string, email: string, pass: string) => {
+    setIsLoading(true);
+    try {
+      const response = await apiClient.post('/users/register', {
+        name,
+        email,
+        password: pass,
+      });
+
+      // --- ZMIANA DLA OPCJI BEZPIECZNEJ ---
+      // Nawet jeśli API zwraca token, IGNORUJEMY go tutaj.
+      // Nie ustawiamy setUserToken, aby nie przełączać ekranu automatycznie.
+      // Użytkownik zostanie przekierowany do logowania przez RegisterScreen.
+      
+      /* if (response.data && response.data.token) {
+          const { token } = response.data;
+          await AsyncStorage.setItem(APP_CONFIG.TOKEN_KEY, token);
+          setUserToken(token); 
+      }
+      */
+
+      return true; // Sukces rejestracji
+    } catch (error) {
+      console.error('Błąd rejestracji:', error);
+      return false; // Błąd rejestracji
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const logout = async () => {
     setIsLoading(true);
     try {
         await AsyncStorage.multiRemove([
             APP_CONFIG.TOKEN_KEY,
-            APP_CONFIG.USER_KEY
+            // APP_CONFIG.USER_KEY 
         ]);
         setUserToken(null);
     } catch (e) {
@@ -71,7 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ login, logout, isLoading, userToken }}>
+    <AuthContext.Provider value={{ login, logout, register, isLoading, userToken }}>
       {children}
     </AuthContext.Provider>
   );

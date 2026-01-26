@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(
     name = "wallets",
-    uniqueConstraints = @UniqueConstraint(name = "uk_user_currency", columnNames = {"user_id", "currency"})
+    uniqueConstraints = @UniqueConstraint(name = "uk_user_currency", columnNames = {"user_id", "currency_code"})
 )
 @Getter
 @Setter
@@ -34,12 +34,12 @@ public class Wallet {
 
     @NotBlank(message = "Currency code is required")
     @Size(min = 3, max = 3, message = "Currency code must be 3 characters (ISO 4217)")
-    @Column(nullable = false, length = 3)
+    @Column(name = "currency", nullable = false, length = 3) 
     private String currency;
 
     @NotNull(message = "Balance cannot be null")
     @DecimalMin(value = "0.0", inclusive = true, message = "Balance cannot be negative")
-    @Column(nullable = false, precision = 19, scale = 2)
+    @Column(nullable = false, precision = 19, scale = 4)
     @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 

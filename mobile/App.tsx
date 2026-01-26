@@ -7,12 +7,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AuthProvider, AuthContext } from '@/context/AuthContext';
 import LoginScreen from '@/screens/LoginScreen';
+import RegisterScreen from '@/screens/RegisterScreen';
 import WalletScreen from '@/screens/WalletScreen';
-import ExchangeScreen from '@/screens/ExchangeScreen'; // <--- NOWY IMPORT
+import ExchangeScreen from '@/screens/ExchangeScreen';
+import TopUpScreen from '@/screens/TopUpScreen';
+import HistoryScreen from '@/screens/HistoryScreen'; // <--- 1. NOWY IMPORT
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
-
 
 function AppNavigator() {
   const { isLoading, userToken } = useContext(AuthContext);
@@ -28,21 +30,31 @@ function AppNavigator() {
   return (
     <Stack.Navigator>
       {userToken == null ? (
-        //  Brak tokenu -> Ekran Logowania
-        <Stack.Screen 
-          name="Login" 
-          component={LoginScreen} 
-          options={{ headerShown: false }} 
-        />
+        //  --- UŻYTKOWNIK NIEZALOGOWANY ---
+        <>
+          <Stack.Screen 
+            name="Login" 
+            component={LoginScreen} 
+            options={{ headerShown: false }} 
+          />
+          <Stack.Screen 
+            name="Register" 
+            component={RegisterScreen} 
+            options={{ 
+              title: 'Rejestracja',
+              headerBackTitle: 'Wróć',
+            }} 
+          />
+        </>
       ) : (
-        //  Zalogowany -> Grupa ekranów dostępnych dla użytkownika
+        //  --- UŻYTKOWNIK ZALOGOWANY ---
         <>
           <Stack.Screen 
             name="Wallet" 
             component={WalletScreen} 
             options={{ 
               title: 'Mój Kantor',
-              headerBackVisible: false // Ukrywa strzałkę powrotu do logowania
+              headerBackVisible: false 
             }}
           />
           <Stack.Screen 
@@ -50,7 +62,24 @@ function AppNavigator() {
             component={ExchangeScreen} 
             options={{ 
               title: 'Wymiana Walut',
-              presentation: 'card' // Opcjonalnie: ładna animacja wejścia
+              presentation: 'card' 
+            }}
+          />
+          <Stack.Screen 
+            name="TopUp" 
+            component={TopUpScreen} 
+            options={{ 
+              title: 'Doładowanie PayPal',
+              headerBackTitle: 'Portfel',
+            }}
+          />
+          {/* 2. DODANA TRASA HISTORII */}
+          <Stack.Screen 
+            name="History" 
+            component={HistoryScreen} 
+            options={{ 
+              title: 'Historia Transakcji',
+              headerBackTitle: 'Portfel',
             }}
           />
         </>

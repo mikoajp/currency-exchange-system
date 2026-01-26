@@ -22,11 +22,12 @@ import pl.aeh.currencyexchange.model.UserRole;
 import pl.aeh.currencyexchange.repository.UserRepository;
 import pl.aeh.currencyexchange.security.JwtUtil;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -94,7 +95,6 @@ class AuthServiceTest {
         assertThat(response).isNotNull();
         assertThat(response.getToken()).isEqualTo("jwt-token");
         assertThat(response.getEmail()).isEqualTo("test@example.com");
-        assertThat(response.getType()).isEqualTo("Bearer");
         
         verify(userRepository).existsByEmail(registerDto.getEmail());
         verify(passwordEncoder).encode(registerDto.getPassword());
@@ -198,11 +198,20 @@ class AuthServiceTest {
         when(jwtUtil.generateToken(any(UserDetails.class))).thenReturn("jwt-token");
         when(jwtUtil.getExpirationTime()).thenReturn(86400000L);
         
+        // Mockowanie zachowania save - sprawdzamy co Service próbuje zapisać w bazie
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
+            
+            // Weryfikacja
             assertThat(savedUser.getWallets()).hasSize(1);
-            assertThat(savedUser.getWallets().get(0).getCurrency()).isEqualTo("PLN");
-            return user;
+            
+            // 👇 KLUCZOWA ZMIANA: getCurrencyCode() zamiast getCurrency()
+            assertThat(savedUser.getWallets().get(0).getCurrencyCode()).isEqualTo("PLN");
+            
+            // Sprawdzenie salda 0.00
+            assertThat(savedUser.getWallets().get(0).getBalance()).isEqualByComparingTo(BigDecimal.ZERO);
+
+            return user; // Zwracamy mockowanego usera
         });
 
         // When

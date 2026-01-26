@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { 
   View, 
   Text, 
@@ -6,27 +6,36 @@ import {
   FlatList, 
   TouchableOpacity, 
   ActivityIndicator, 
-  RefreshControl,
-  Button
+  RefreshControl
 } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import { AuthContext } from '@/context/AuthContext';
 import { walletService } from '@/services/walletService';
 import { Wallet } from '@/types'; 
 
-const WalletScreen = ({ navigation }: any) => {
+const WalletScreen = () => {
   const { logout } = useContext(AuthContext);
+  const navigation = useNavigation<any>();
 
   const { data: wallets, isLoading, refetch } = useQuery({
     queryKey: ['wallets'],
     queryFn: walletService.getMyWallets,
   });
 
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
+
   const renderWalletItem = ({ item }: { item: Wallet }) => (
     <View style={styles.card}>
       <View style={styles.row}>
-        <Text style={styles.currencyCode}>{item.currency}</Text>
+        {/* Wyświetlamy kod waluty (np. PLN) */}
+        <Text style={styles.currency}>{item.currency}</Text>
+        {/* Wyświetlamy saldo z 2 miejscami po przecinku */}
         <Text style={styles.balance}>
           {item.balance.toFixed(2)}
         </Text>
@@ -34,7 +43,7 @@ const WalletScreen = ({ navigation }: any) => {
     </View>
   );
 
-  if (isLoading) {
+  if (isLoading && !wallets) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#007AFF" />
@@ -48,7 +57,7 @@ const WalletScreen = ({ navigation }: any) => {
       <View style={styles.header}>
         <View>
             <Text style={styles.title}>Twój Portfel</Text>
-            <Text style={styles.subtitle}>Jesteś zalogowany</Text>
+            <Text style={styles.subtitle}>Stan konta</Text>
         </View>
         <TouchableOpacity onPress={logout}>
           <Text style={styles.logoutText}>Wyloguj</Text>
@@ -58,24 +67,44 @@ const WalletScreen = ({ navigation }: any) => {
       {/* Lista Portfeli */}
       <FlatList
         data={wallets}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => (item.id ? item.id.toString() : item.currency)}
         renderItem={renderWalletItem}
         contentContainerStyle={styles.list}
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={refetch} />
         }
         ListEmptyComponent={
-          <Text style={styles.emptyText}>Brak środków. Doładuj konto.</Text>
+          <View style={styles.center}>
+             <Text style={styles.emptyText}>Brak środków.</Text>
+             <Text style={styles.emptyText}>Skontaktuj się z administratorem.</Text>
+          </View>
         }
       />
 
-      {/* Przycisk nawigacji do Wymiany (Exchange) */}
+      {/* Footer z przyciskami */}
       <View style={styles.footer}>
+        {/* Przycisk Wymiany */}
         <TouchableOpacity 
           style={styles.exchangeButton}
           onPress={() => navigation.navigate('Exchange')}
         >
           <Text style={styles.buttonText}>Wymień Walutę</Text>
+        </TouchableOpacity>
+
+        {/* Przycisk Doładowania (PayPal) */}
+        <TouchableOpacity 
+          style={[styles.exchangeButton, styles.paypalButton]}
+          onPress={() => navigation.navigate('TopUp')}
+        >
+          <Text style={[styles.buttonText, styles.paypalButtonText]}>Doładuj (PayPal)</Text>
+        </TouchableOpacity>
+
+        {/* PRZYCISK: Historia Transakcji */}
+        <TouchableOpacity 
+          style={[styles.exchangeButton, styles.historyButton]}
+          onPress={() => navigation.navigate('History')}
+        >
+          <Text style={styles.buttonText}>Historia Transakcji</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -90,6 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', 
     alignItems: 'center', 
     padding: 20, 
+    paddingTop: 50, 
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e5e5ea'
@@ -110,10 +140,17 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  currencyCode: { fontSize: 20, fontWeight: 'bold', color: '#333' },
+  currency: { fontSize: 20, fontWeight: 'bold', color: '#333' },
   balance: { fontSize: 24, fontWeight: '600', color: '#007AFF' },
-  emptyText: { textAlign: 'center', marginTop: 50, color: 'gray' },
-  footer: { padding: 20, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#e5e5ea' },
+  emptyText: { textAlign: 'center', color: 'gray', marginTop: 10 },
+  
+  footer: { 
+    padding: 20, 
+    backgroundColor: '#fff', 
+    borderTopWidth: 1, 
+    borderTopColor: '#e5e5ea', 
+    paddingBottom: 30 
+  },
   exchangeButton: {
     backgroundColor: '#007AFF',
     padding: 16,
@@ -121,6 +158,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  
+  paypalButton: {
+    backgroundColor: '#FFC439', 
+    marginTop: 12,           
+  },
+  paypalButtonText: {
+    color: '#003087',          
+  },
+
+  historyButton: {
+    backgroundColor: '#8E8E93', 
+    marginTop: 12,
+  }
 });
 
 export default WalletScreen;
