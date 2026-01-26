@@ -1,93 +1,71 @@
-# 💱 Currency Exchange System
+# Currency Exchange System - Instrukcja Uruchomienia (Local Dev)
 
-System mobilny kantoru wymiany walut - projekt akademicki
+Projekt składa się z backendu (Spring Boot + PostgreSQL) oraz aplikacji mobilnej (React Native).
 
-## 👥 Autorzy
-- **Mikołaj Przybysz**
-- **Jakub Dyba**
+## 1. Wymagania wstępne
+*   **Java JDK 17** (sprawdź: `java -version`)
+*   **Node.js 18+** (sprawdź: `node -v`)
+*   **Docker** (do bazy danych)
+*   **Android Studio + SDK** (dla Androida)
+*   **Xcode** (tylko dla iOS na macOS)
 
-**Przedmiot:** Zagadnienia sieciowe w systemach mobilnych  
-**Rok akademicki:** 2024/2025  
-**Uczelnia:** Akademia Ekonomiczno-Humanistyczna w Warszawie
+## 2. Backend (Serwer)
 
-## 📋 Opis projektu
-
-Mobilny system kantoru wymiany walut z integracją API NBP, umożliwiający:
-- Rejestrację i autentykację użytkowników (JWT)
-- Zarządzanie wirtualnym portfelem walutowym
-- Wymianę walut w czasie rzeczywistym
-- Przeglądanie historii transakcji
-- Dostęp do aktualnych i historycznych kursów walut
-
-## 🏗️ Architektura
-
-```
-currency-exchange-system/
-├── backend/          # Spring Boot REST API
-├── mobile/           # React Native App
-└── docs/            # Dokumentacja projektu
-```
-
-### Stack technologiczny
-
-**Backend:**
-- Java 17 / Spring Boot 3.2+
-- Spring Security + JWT
-- Spring Data JPA
-- PostgreSQL 15+
-- Flyway (migracje DB)
-
-**Mobile:**
-- React Native + TypeScript
-- React Navigation
-- Axios + React Query
-- AsyncStorage
-
-**Infrastructure:**
-- Docker & Docker Compose
-- GitHub Actions (CI/CD)
-
-## 🚀 Quick Start
-
-### Wymagania
-- JDK 17+
-- Node.js 18+
-- Docker Desktop
-- Git
-
-### Backend
+### Baza danych
+Uruchom bazę danych PostgreSQL w kontenerze Docker:
 ```bash
 cd backend
-docker-compose up -d  # PostgreSQL
+docker-compose up -d postgres
+```
+*Domyślne dane: user=`postgres`, pass=`postgres`, db=`currency_exchange_db`, port=`5432`.*
+
+### Aplikacja
+W tym samym terminalu uruchom backend:
+```bash
 ./gradlew bootRun
 ```
+Backend wystartuje pod adresem: `http://localhost:8080`.
+Swagger UI: `http://localhost:8080/api/swagger-ui.html`
 
-API: http://localhost:8080
+## 3. Mobile (Aplikacja)
 
-### Mobile
+### Instalacja zależności
 ```bash
 cd mobile
 npm install
-npm run android  # lub ios
 ```
 
-## 📚 Dokumentacja
+### Konfiguracja Androida (Ważne!)
+Upewnij się, że masz plik `mobile/android/local.properties` wskazujący na Twoje SDK. Jeśli nie, utwórz go:
+```properties
+sdk.dir=/Users/TWOJ_USER/Library/Android/sdk
+```
+*(Na Windows ścieżka wygląda inaczej, np. `C:\Users\User\AppData\Local\Android\Sdk`)*
 
-- [Backend README](./backend/README.md)
-- [Mobile README](./mobile/README.md)
-- [Dokumentacja projektowa](./docs/Dokumentacja_Projektowa.pdf)
-- [Zadanie projektowe](./docs/Projekt.pdf)
+### Uruchomienie (Android)
+1.  Otwórz emulator w Android Studio (lub podłącz telefon).
+2.  W terminalu (folder `mobile`):
+    ```bash
+    # Uruchomienie Metro Bundlera + Instalacja aplikacji
+    npm start
+    # W nowym oknie:
+    npm run android
+    ```
 
-## 📊 Status projektu
+### Uruchomienie (iOS - tylko macOS)
+1.  Zainstaluj zależności (wymaga CocoaPods):
+    ```bash
+    cd mobile/ios && pod install && cd ..
+    ```
+2.  Uruchom:
+    ```bash
+    npm run ios
+    ```
 
-| Faza | Status |
-|------|--------|
-| Setup środowiska | ✅ Done |
-| Autentykacja | 📋 Planned |
-| Integracja NBP | 📋 Planned |
-| Moduł wymiany | 📋 Planned |
-| UI Mobile | 📋 Planned |
+## 4. Rozwiązywanie problemów
 
-## 📄 Licencja
-
-Projekt edukacyjny - AEH Warszawa
+*   **Port 5432 zajęty:** Jeśli masz lokalnego Postgresa na Macu, wyłącz go: `brew services stop postgresql`.
+*   **Aplikacja nie łączy się z API:**
+    *   Android Emulator wymaga przekierowania portów: `adb reverse tcp:8080 tcp:8080`
+    *   Adres API w `src/constants/config.ts` dla Androida to `10.0.2.2`, dla iOS `localhost`.
+*   **Błędy Gradle:** Upewnij się, że używasz Java 17.

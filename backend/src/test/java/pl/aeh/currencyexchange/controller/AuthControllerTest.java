@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AuthController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, JwtAuthenticationFilter.class})
 @DisplayName("Auth Controller Tests")
 class AuthControllerTest {
 
@@ -49,8 +49,7 @@ class AuthControllerTest {
     @MockBean
     private JwtUtil jwtUtil;
 
-    @MockBean
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    // Removed @MockBean private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @MockBean
     private CustomUserDetailsService customUserDetailsService;
@@ -102,7 +101,7 @@ class AuthControllerTest {
         when(authService.register(any(RegisterDto.class))).thenReturn(authResponseDto);
 
         // When/Then
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/api/users/register")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerDto)))
@@ -120,7 +119,7 @@ class AuthControllerTest {
                 .thenThrow(new UserAlreadyExistsException("User already exists"));
 
         // When/Then
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/api/users/register")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerDto)))
@@ -137,7 +136,7 @@ class AuthControllerTest {
                 .build();
 
         // When/Then
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/api/users/register")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidDto)))
@@ -151,7 +150,7 @@ class AuthControllerTest {
         when(authService.login(any(LoginDto.class))).thenReturn(authResponseDto);
 
         // When/Then
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/api/users/login")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDto)))
@@ -168,7 +167,7 @@ class AuthControllerTest {
                 .thenThrow(new InvalidCredentialsException("Invalid credentials"));
 
         // When/Then
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/api/users/login")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDto)))
@@ -183,7 +182,7 @@ class AuthControllerTest {
         when(authService.getCurrentUser()).thenReturn(userDto);
 
         // When/Then
-        mockMvc.perform(get("/api/auth/me")
+        mockMvc.perform(get("/api/users/me")
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("test@example.com"))
@@ -194,7 +193,7 @@ class AuthControllerTest {
     @DisplayName("Should return health status")
     void shouldReturnHealthStatus() throws Exception {
         // When/Then
-        mockMvc.perform(get("/api/auth/health"))
+        mockMvc.perform(get("/api/users/health"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Authentication service is running"));
     }
