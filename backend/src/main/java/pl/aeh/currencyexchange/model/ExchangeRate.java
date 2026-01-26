@@ -35,7 +35,7 @@ public class ExchangeRate {
 
     @NotBlank(message = "Currency code is required")
     @Size(min = 3, max = 3, message = "Currency code must be 3 characters (ISO 4217)")
-    @Column(nullable = false, length = 3)
+    @Column(name = "currency", nullable = false, length = 3)
     private String currency;
 
     @NotNull(message = "Rate date is required")
@@ -95,7 +95,7 @@ public class ExchangeRate {
     public String toString() {
         return "ExchangeRate{" +
                 "id=" + id +
-                ", currency='" + currency + '\'' +
+                ", currency='" + currency + '\'' + // ZMIANA w toString
                 ", currencyName='" + currencyName + '\'' +
                 ", rateDate=" + rateDate +
                 ", bid=" + bid +

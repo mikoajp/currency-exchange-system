@@ -1,22 +1,20 @@
-# IDE
+# ========================
+# IDE / SYSTEMOWE
+# ========================
 *.swp
-
-# Environment
-.env
-.env.local
-
-# Logs
-*.log
-/docs
-!/docs/IMPLEMENTATION_GUIDE.md
-
-# ========================
-# SYSTEMOWE (OSX / Windows)
-# ========================
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
+
+# ========================
+# ENVIRONMENT & LOGS
+# ========================
+.env
+.env.local
+*.log
+npm-debug.log
+yarn-error.log
 
 # ========================
 # BACKEND (Java / Spring Boot)
@@ -31,23 +29,43 @@ backend/help.md
 *.war
 
 # ========================
-# MOBILE
+# MOBILE (React Native)
 # ========================
 
-# Node modules 
+# Zależności 
+mobile/node_modules/
+# Zależności 
 node_modules/
-npm-debug.log
-yarn-error.log
 
-# Android
+# Cache Metro Bundlera
+.metro/
+mobile/.metro/
+
+# --- ANDROID (Kluczowa sekcja naprawcza) ---
+# Główny folder build
 mobile/android/build/
-mobile/android/.gradle
+mobile/android/app/build/
+# Cache Gradle
+mobile/android/.gradle/
+# Konfiguracja lokalna (ścieżka do SDK)
 mobile/android/local.properties
+# Pliki projektu IntelliJ/Android Studio
+mobile/android/*.iml
+mobile/android/.idea
+# Klucze (nigdy nie wrzucaj kluczy publikacji!)
 *.keystore
+*.jks
 
-# iOS
-mobile/ios/Pods/
+# --- iOS ---
 mobile/ios/build/
+mobile/ios/Pods/
+mobile/ios/DerivedData/
+mobile/ios/*.xcworkspace/xcuserdata/
+mobile/ios/*.mode1v3
+mobile/ios/*.mode2v3
+mobile/ios/*.moved-aside
+mobile/ios/generated/
 
-# Bundle
+# --- Bundle (wygenerowane pliki JS) ---
 *.jsbundle
+mobile/android/app/src/main/assets/index.android.bundle

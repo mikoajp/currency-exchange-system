@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; 
 import { AuthContext } from '@/context/AuthContext';
 
 const LoginScreen = () => {
@@ -7,6 +8,8 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const { login, isLoading } = useContext(AuthContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const navigation = useNavigation<any>(); 
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -21,6 +24,10 @@ const LoginScreen = () => {
     if (!success) {
       Alert.alert('Niepowodzenie', 'Błędny email lub hasło.');
     }
+  };
+
+  const handleNavigateToRegister = () => {
+    navigation.navigate('Register'); 
   };
 
   return (
@@ -58,6 +65,15 @@ const LoginScreen = () => {
             <Text style={styles.buttonText}>ZALOGUJ SIĘ</Text>
           )}
         </TouchableOpacity>
+
+        {/* 4. Sekcja linku do rejestracji */}
+        <View style={styles.registerContainer}>
+            <Text style={styles.registerText}>Nie masz konta? </Text>
+            <TouchableOpacity onPress={handleNavigateToRegister}>
+                <Text style={styles.registerLink}>Zarejestruj się</Text>
+            </TouchableOpacity>
+        </View>
+
       </View>
     </View>
   );
@@ -71,6 +87,9 @@ const styles = StyleSheet.create({
   input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 12, marginBottom: 15, fontSize: 16 },
   button: { backgroundColor: '#007AFF', padding: 15, borderRadius: 8, alignItems: 'center', marginTop: 10 },
   buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  registerContainer: { flexDirection: 'row', justifyContent: 'center', marginTop: 20 },
+  registerText: { color: '#666', fontSize: 14 },
+  registerLink: { color: '#007AFF', fontWeight: 'bold', fontSize: 14 },
 });
 
 export default LoginScreen;

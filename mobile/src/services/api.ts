@@ -14,6 +14,13 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   async (config) => {
     const token = await AsyncStorage.getItem(APP_CONFIG.TOKEN_KEY);
+    
+    // --- DEBUG LOGI (Usuń przed produkcją) ---
+    console.log('--- WYSYŁAM REQUEST ---');
+    console.log('URL:', config.baseURL + config.url);
+    console.log('Token w storage:', token);
+    // ----------------------------------------
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

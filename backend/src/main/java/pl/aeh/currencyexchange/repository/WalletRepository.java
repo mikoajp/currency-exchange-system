@@ -16,23 +16,25 @@ import java.util.Optional;
 public interface WalletRepository extends JpaRepository<Wallet, Long> {
 
     /**
-     * Find wallet by user ID and currency
+     * Find wallet by user ID and currency code
      *
-     * @param userId   user's ID
+     * @param userId       user's ID
      * @param currency currency code (e.g., "PLN", "USD")
      * @return Optional containing wallet if found
      */
+    // ZMIANA: currency -> currencyCode
     Optional<Wallet> findByUserIdAndCurrency(Long userId, String currency);
 
     /**
-     * Find wallet by user ID and currency with pessimistic write lock
+     * Find wallet by user ID and currency code with pessimistic write lock
      * Used for concurrent transaction safety
      *
-     * @param userId   user's ID
+     * @param userId       user's ID
      * @param currency currency code
      * @return Optional containing locked wallet
      */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
+    // ZMIANA: w.currency -> w.currencyCode
     @Query("SELECT w FROM Wallet w WHERE w.user.id = :userId AND w.currency = :currency")
     Optional<Wallet> findByUserIdAndCurrencyWithLock(@Param("userId") Long userId, @Param("currency") String currency);
 
@@ -45,29 +47,32 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
     List<Wallet> findAllByUserId(Long userId);
 
     /**
-     * Find all wallets for a user ordered by currency
+     * Find all wallets for a user ordered by currency code
      *
      * @param userId user's ID
      * @return List of wallets ordered by currency
      */
+    // ZMIANA: OrderByCurrency -> OrderByCurrencyCode
     List<Wallet> findAllByUserIdOrderByCurrencyAsc(Long userId);
 
     /**
-     * Check if wallet exists for user and currency
+     * Check if wallet exists for user and currency code
      *
-     * @param userId   user's ID
+     * @param userId       user's ID
      * @param currency currency code
      * @return true if wallet exists, false otherwise
      */
+    // ZMIANA: currency -> currencyCode
     boolean existsByUserIdAndCurrency(Long userId, String currency);
 
     /**
      * Get balance for specific wallet
      *
-     * @param userId   user's ID
+     * @param userId       user's ID
      * @param currency currency code
      * @return Optional containing balance
      */
+    // ZMIANA: w.currency -> w.currencyCode
     @Query("SELECT w.balance FROM Wallet w WHERE w.user.id = :userId AND w.currency = :currency")
     Optional<BigDecimal> getBalanceByUserIdAndCurrency(@Param("userId") Long userId, @Param("currency") String currency);
 
@@ -77,6 +82,7 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
      * @param userId user's ID
      * @return List of wallets with positive balance
      */
+    // ZMIANA: w.currency -> w.currencyCode
     @Query("SELECT w FROM Wallet w WHERE w.user.id = :userId AND w.balance > 0 ORDER BY w.currency")
     List<Wallet> findAllActiveWalletsByUserId(@Param("userId") Long userId);
 
@@ -89,10 +95,12 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
     long countByUserId(Long userId);
 
     /**
-     * Delete wallet if balance is zero
+     * Delete wallet if balance is zero (cleanup)
      *
-     * @param userId   user's ID
+     * @param userId       user's ID
      * @param currency currency code
+     * @param balance      exact balance (usually BigDecimal.ZERO)
      */
+    // ZMIANA: currency -> currencyCode
     void deleteByUserIdAndCurrencyAndBalance(Long userId, String currency, BigDecimal balance);
 }

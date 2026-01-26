@@ -19,20 +19,28 @@ export interface LoginRequest {
 export interface RegisterRequest {
   email: string;
   password: string;
-  firstName?: string;
+  firstName?: string; // Uwaga: w AuthContext wysyłamy 'name', upewnij się, że backend to mapuje
   lastName?: string;
 }
 
+// ZMIANA: currency -> currencyCode (zgodnie z backendem WalletDto)
 export interface Wallet {
   id: number;
-  currency: string;
+  currency: string; 
   balance: number;
+}
+
+// NOWOŚĆ: Potrzebne do walletService.exchangeCurrency
+export interface ExchangeRequest {
+  fromCurrency: string;
+  toCurrency: string;
+  amount: number;
 }
 
 export interface ExchangeRate {
   id: number;
-  currency: string; // Currency name (e.g., "dolar amerykański")
-  code: string;     // ISO code (e.g., "USD")
+  currency: string; // Pełna nazwa (np. "dolar amerykański")
+  code: string;     // Kod ISO (np. "USD")
   bid: number;
   ask: number;
   midRate: number;
