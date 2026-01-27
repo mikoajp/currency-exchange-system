@@ -205,7 +205,7 @@ class AuthServiceTest {
             // Weryfikacja
             assertThat(savedUser.getWallets()).hasSize(1);
             
-            // 👇 KLUCZOWA ZMIANA: getCurrency() zamiast getCurrency()
+            // 👇 KLUCZOWA ZMIANA: getCurrency() zamiast getCurrencyCode()
             assertThat(savedUser.getWallets().get(0).getCurrency()).isEqualTo("PLN");
             
             // Sprawdzenie salda 0.00

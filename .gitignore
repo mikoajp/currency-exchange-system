@@ -68,4 +68,4 @@ mobile/ios/generated/
 
 # --- Bundle (wygenerowane pliki JS) ---
 *.jsbundle
-mobile/android/app/src/main/assets/index.android.bundle
+mobile/android/app/src/main/assets/index.android.bundlemobile/ios/.xcode.env.local

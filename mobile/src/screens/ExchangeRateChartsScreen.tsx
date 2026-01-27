@@ -12,8 +12,6 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { exchangeRateService } from '@/services/exchangeRateService';
 
-const { width } = Dimensions.get('window');
-
 type TimeRange = '7d' | '30d' | '90d';
 type Currency = 'USD' | 'EUR' | 'GBP' | 'CHF';
 
@@ -55,11 +53,11 @@ const ExchangeRateChartsScreen = () => {
     const labels = rates
       .filter((_, index) => index % step === 0)
       .map((item) => {
-        const date = new Date(item.effectiveDate);
+        const date = new Date(item.rateDate);
         return `${date.getDate()}/${date.getMonth() + 1}`;
       });
 
-    const data = rates.map((item) => item.rate);
+    const data = rates.map((item) => item.midRate);
 
     return {
       labels,
@@ -76,7 +74,7 @@ const ExchangeRateChartsScreen = () => {
   const getStatistics = () => {
     if (!rates || rates.length === 0) return null;
 
-    const values = rates.map((r) => r.rate);
+    const values = rates.map((r) => r.midRate);
     const min = Math.min(...values);
     const max = Math.max(...values);
     const avg = values.reduce((a, b) => a + b, 0) / values.length;
@@ -169,21 +167,20 @@ const ExchangeRateChartsScreen = () => {
               <Text style={styles.chartNote}>
                 📅 Okres: {timeRanges.find(r => r.value === timeRange)?.label}
               </Text>
-              {rates && rates.length > 0 && (
-                <View style={styles.dataList}>
-                  {rates.slice(0, 5).map((rate, idx) => (
-                    <View key={idx} style={styles.dataRow}>
-                      <Text style={styles.dataDate}>{rate.effectiveDate}</Text>
-                      <Text style={styles.dataRate}>{rate.rate.toFixed(4)} PLN</Text>
-                    </View>
-                  ))}
-                  {rates.length > 5 && (
-                    <Text style={styles.moreData}>
-                      ... i {rates.length - 5} więcej punktów danych
-                    </Text>
-                  )}
-                </View>
-              )}
+              
+              <View style={styles.dataList}>
+                {rates.slice(0, 5).map((rate, idx) => (
+                  <View key={idx} style={styles.dataRow}>
+                    <Text style={styles.dataDate}>{rate.rateDate}</Text>
+                    <Text style={styles.dataRate}>{rate.midRate.toFixed(4)} PLN</Text>
+                  </View>
+                ))}
+                {rates.length > 5 && (
+                  <Text style={styles.moreData}>
+                    ... i {rates.length - 5} więcej punktów danych
+                  </Text>
+                )}
+              </View>
             </View>
           </View>
 
