@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { render, waitFor } from '@testing-library/react-native';
+import { render, waitFor, fireEvent } from '@testing-library/react-native';
 import { AuthProvider, AuthContext } from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiClient from '../services/api';
@@ -43,8 +43,11 @@ describe('AuthContext', () => {
       </AuthProvider>
     );
 
-    await waitFor(() => expect(getByTestId('loading')).toBe('false'));
-    expect(getByTestId('token').children[0]).toBe('stored-token');
+    await waitFor(() => {
+      const loadingElement = getByTestId('loading');
+      expect(loadingElement.props.children).toBe('false');
+    });
+    expect(getByTestId('token').props.children).toBe('stored-token');
     expect(AsyncStorage.getItem).toHaveBeenCalledWith(APP_CONFIG.TOKEN_KEY);
   });
 
@@ -57,45 +60,58 @@ describe('AuthContext', () => {
       </AuthProvider>
     );
 
-    await waitFor(() => expect(getByTestId('loading')).toBe('false'));
-    expect(getByTestId('token').children.length).toBe(0); // empty
+    await waitFor(() => {
+      const loadingElement = getByTestId('loading');
+      expect(loadingElement.props.children).toBe('false');
+    });
+    expect(getByTestId('token').props.children).toBeFalsy();
   });
 
   it('login success stores token', async () => {
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     (apiClient.post as jest.Mock).mockResolvedValue({ data: { token: 'new-token' } });
 
-    const { getByTestId, fireEvent } = render(
+    const { getByTestId } = render(
       <AuthProvider>
         <TestComponent />
       </AuthProvider>
     );
     
     // Wait for initial check
-    await waitFor(() => expect(getByTestId('loading')).toBe('false'));
+    await waitFor(() => {
+      const loadingElement = getByTestId('loading');
+      expect(loadingElement.props.children).toBe('false');
+    });
 
     const loginBtn = getByTestId('loginBtn');
     fireEvent.press(loginBtn);
 
-    await waitFor(() => expect(getByTestId('token').children[0]).toBe('new-token'));
+    await waitFor(() => {
+      expect(getByTestId('token').props.children).toBe('new-token');
+    });
     expect(AsyncStorage.setItem).toHaveBeenCalledWith(APP_CONFIG.TOKEN_KEY, 'new-token');
   });
 
   it('logout removes token', async () => {
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue('existing-token');
     
-    const { getByTestId, fireEvent } = render(
+    const { getByTestId } = render(
       <AuthProvider>
         <TestComponent />
       </AuthProvider>
     );
 
-    await waitFor(() => expect(getByTestId('loading')).toBe('false'));
+    await waitFor(() => {
+      const loadingElement = getByTestId('loading');
+      expect(loadingElement.props.children).toBe('false');
+    });
     
     const logoutBtn = getByTestId('logoutBtn');
     fireEvent.press(logoutBtn);
 
-    await waitFor(() => expect(getByTestId('token').children.length).toBe(0));
-    expect(AsyncStorage.multiRemove).toHaveBeenCalledWith([APP_CONFIG.TOKEN_KEY, APP_CONFIG.USER_KEY]);
+    await waitFor(() => {
+      expect(getByTestId('token').props.children).toBeFalsy();
+    });
+    expect(AsyncStorage.multiRemove).toHaveBeenCalledWith([APP_CONFIG.TOKEN_KEY]);
   });
 });

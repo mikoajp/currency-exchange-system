@@ -59,3 +59,14 @@ export interface Transaction {
   status: 'PENDING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
   createdAt: string;
 }
+
+// Navigation Types
+export type RootStackParamList = {
+  Login: undefined;
+  Register: undefined;
+  Wallet: undefined;
+  Exchange: undefined;
+  TopUp: undefined;
+  History: undefined;
+  ExchangeRateCharts: undefined;  // Screen displaying exchange rate charts
+};

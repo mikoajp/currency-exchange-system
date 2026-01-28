@@ -3,6 +3,14 @@ import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import LoginScreen from '../screens/LoginScreen';
 import { AuthContext } from '../context/AuthContext';
 
+// Mock navigation
+const mockNavigate = jest.fn();
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: () => ({
+    navigate: mockNavigate,
+  }),
+}));
+
 // Mock Alert to prevent it from blocking tests
 jest.spyOn(require('react-native').Alert, 'alert');
 
