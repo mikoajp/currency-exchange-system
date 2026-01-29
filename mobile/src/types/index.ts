@@ -68,5 +68,5 @@ export type RootStackParamList = {
   Exchange: undefined;
   TopUp: undefined;
   History: undefined;
-  ExchangeRateCharts: undefined;  // Screen displaying exchange rate charts
+  Charts: undefined; // Exchange rate charts screen
 };
