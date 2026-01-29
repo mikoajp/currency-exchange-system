@@ -30,71 +30,65 @@ function AppNavigator() {
   }
 
   return (
-    <Stack.Navigator>
-      {userToken == null ? (
-        //  --- UŻYTKOWNIK NIEZALOGOWANY ---
-        <>
-          <Stack.Screen 
-            name="Login" 
-            component={LoginScreen} 
-            options={{ headerShown: false }} 
-          />
-          <Stack.Screen 
-            name="Register" 
-            component={RegisterScreen} 
-            options={{ 
-              title: 'Rejestracja',
-              headerBackTitle: 'Wróć',
-            }} 
-          />
-        </>
-      ) : (
-        //  --- UŻYTKOWNIK ZALOGOWANY ---
-        <>
-          <Stack.Screen 
-            name="Wallet" 
-            component={WalletScreen} 
-            options={{ 
-              title: 'Mój Kantor',
-              headerBackVisible: false 
-            }}
-          />
-          <Stack.Screen 
-            name="Exchange" 
-            component={ExchangeScreen} 
-            options={{ 
-              title: 'Wymiana Walut',
-              presentation: 'card' 
-            }}
-          />
-          <Stack.Screen 
-            name="TopUp" 
-            component={TopUpScreen} 
-            options={{ 
-              title: 'Doładowanie PayPal',
-              headerBackTitle: 'Portfel',
-            }}
-          />
-          {/* 2. DODANA TRASA HISTORII */}
-          <Stack.Screen 
-            name="History" 
-            component={HistoryScreen} 
-            options={{ 
-              title: 'Historia Transakcji',
-              headerBackTitle: 'Portfel',
-            }}
-          />
-          {/* 3. DODANA TRASA WYKRESÓW */}
-          <Stack.Screen 
-            name="ExchangeRateCharts" 
-            component={ExchangeRateChartsScreen} 
-            options={{ 
-              title: 'Wykresy Kursów',
-              headerBackTitle: 'Portfel',
-            }}
-          />
-        </>
-      )}
+    <Stack.Navigator 
+      screenOptions={{ headerShown: true }}
+      initialRouteName={userToken ? 'Wallet' : 'Login'}
+    >
+      {/* Auth screens - zawsze zarejestrowane */}
+      <Stack.Screen 
+        name="Login" 
+        component={LoginScreen} 
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen 
+        name="Register" 
+        component={RegisterScreen} 
+        options={{ 
+          title: 'Rejestracja',
+          headerBackTitle: 'Wróć',
+        }} 
+      />
+      
+      {/* Protected screens - zawsze zarejestrowane */}
+      <Stack.Screen 
+        name="Wallet" 
+        component={WalletScreen} 
+        options={{ 
+          title: 'Mój Kantor',
+          headerBackVisible: false 
+        }}
+      />
+      <Stack.Screen 
+        name="Charts" 
+        component={TestChartsScreen} 
+        options={{ 
+          title: '🧪 TEST WYKRESY KURSÓW 🧪',
+          headerBackTitle: 'Portfel',
+        }}
+      />
+      <Stack.Screen 
+        name="Exchange" 
+        component={ExchangeScreen} 
+        options={{ 
+          title: 'Wymiana Walut',
+        }}
+      />
+      <Stack.Screen 
+        name="TopUp" 
+        component={TopUpScreen} 
+        options={{ 
+          title: 'Doładowanie PayPal',
+          headerBackTitle: 'Portfel',
+        }}
+      />
+      <Stack.Screen 
+        name="History" 
+        component={HistoryScreen} 
+        options={{ 
+          title: 'Historia Transakcji',
+          headerBackTitle: 'Portfel',
+        }}
+      />
     </Stack.Navigator>
   );
 }
@@ -104,7 +98,15 @@ function App(): React.JSX.Element {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <NavigationContainer>
+          <NavigationContainer
+            onStateChange={() => {
+              // State persistence disabled - no saving
+            }}
+            onReady={() => {
+              console.log('✅ Navigation container ready');
+            }}
+            initialState={undefined}
+          >
             <AppNavigator />
           </NavigationContainer>
         </AuthProvider>
